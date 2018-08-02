@@ -1,0 +1,8 @@
+{
+  "name": "SDP",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular",
+  "pro_id": "58aa45de"
+}
