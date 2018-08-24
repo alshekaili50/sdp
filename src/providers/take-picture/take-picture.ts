@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 /*
@@ -12,19 +11,20 @@ import { Camera, CameraOptions } from '@ionic-native/camera';
 @Injectable()
 export class TakePictureProvider {
 
-  constructor(public http: HttpClient,private camera: Camera) {
+  constructor(private camera: Camera) {
 
-    console.log('Hello TakePictureProvider Provider');
+    console.log('Hello ddff Provider');
 
   }
 
+  takePicture() {
+    let opcoes = {
+    maximumImagesCount: 1,
+    sourceType: 1,
+    encodingType: this.camera.EncodingType.JPEG,
+    destinationType: 0, // USE THIS TO RETURN BASE64 STRING
+    correctOrientation: true
+  };
+return  this.camera.getPicture(opcoes);
 }
-function takePicture() {
-this.camera.getPicture().then((imageData) => {
- // imageData is either a base64 encoded string or a file URI
- // If it's base64 (DATA_URL):
- let base64Image = 'data:image/jpeg;base64,' + imageData;
-}, (err) => {
- // Handle error
-});
 }
