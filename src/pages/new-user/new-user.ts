@@ -11,6 +11,9 @@ import { AngularFireDatabase,AngularFireList } from 'angularfire2/database';
 import { AlertController } from 'ionic-angular';
 import { LoadingController } from 'ionic-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
+import {AuthServiceProvider} from '../../providers/auth-service/auth-service';
+import {HomePage} from '../home/home';
+import { ToastController } from 'ionic-angular';
 
 
 
@@ -34,12 +37,20 @@ export class NewUserPage {
   afList:any;
   base64Image:any;
   res:any;
-
+  signupError: string;
+  data:any;
   constructor(public navCtrl: NavController, public navParams: NavParams, public takePicture:TakePictureProvider,
   public actionSheetCtrl: ActionSheetController, public openGallary:OpengallaryProvider,  private vision: GoogleCloudVisionServiceProvider,
-  private db: AngularFireDatabase,private alert: AlertController,public loadingCtrl: LoadingController,public camera:Camera)
+  private db: AngularFireDatabase,private alert: AlertController,public loadingCtrl: LoadingController,public camera:Camera
+  ,public auth:AuthServiceProvider,private toastCtrl: ToastController)
  {
      this.afList = db.list('/items')
+     this.data={
+       firstName:'',
+       lastName:'',
+       email:'',
+       password:''
+     }
 
   }
 
@@ -55,46 +66,7 @@ export class NewUserPage {
     this.slides.lockSwipeToPrev(false)
 
   }
-  presentActionSheet() {
-   let actionSheet = this.actionSheetCtrl.create({
-     title: 'Chose how to upload your Photo',
-     buttons: [
-       {
-         text: 'Open Camera',
-         role: 'destructive',
-         handler: () => {
-           console.log('Destructive clicked');
-           this.takePicture.takePicture();
-         }
-       },
-       {
-         text: 'From Gallary',
-         handler: () => {
-           console.log('Archive clicked');
-           this.openGallary.getImages();
-         }
-       },
-       {
-         text: 'Cancel',
-         role: 'cancel',
-         handler: () => {
-           console.log('Cancel clicked');
-         }
-       }
-     ]
-   });
 
-   actionSheet.present();
- }
- saveResults(imageData, results) {
-
-//console.log(imageData,results);
-  this.afList.push({ imageData:imageData,results:results })
-
-
-
-
-}
 
 showAlert(message) {
   let alert = this.alert.create({
@@ -104,62 +76,42 @@ showAlert(message) {
   });
   alert.present();
 }
-takePhoto() {
-  const loader = this.loadingCtrl.create({
-      content: "Please wait...",
-      duration: 10000
-    });
-    let opcoes = {
-    maximumImagesCount: 1,
-    sourceType: 1,
-    encodingType: this.camera.EncodingType.JPEG,
-    destinationType: 0, // USE THIS TO RETURN BASE64 STRING
-    correctOrientation: true
-  };
+
+signUp() {
 
 
 
-   this.camera.getPicture(opcoes).then((imageData) => {
-//     console.log(imageData);
-     loader.present();
-     this.base64Image = "data:image/jpeg;base64," + imageData;
-      this.vision.getLabels(imageData).subscribe(
-            (val) => {
-                      console.log(1);
-                       console.log("POST call successful value returned in body",
-                       val.toString());
-                       //val=JSON.stringify(val);
-                       this.res=val
+		let credentials = {
+			email: this.data.email,
+			password: this.data.password
+		};
+    console.log(credentials);
 
-            },
-            response => {
-                loader.dismiss();
-                console.log("POST call in error", response);
-                this.showAlert("Please check your network connectivity")
-            },
-            () => {
-                loader.dismiss();
-                console.log("The POST observable is now completed.");
+		this.auth.signUp(credentials).then(res=>{
+      this.presentToast('Account created successfully');
+       this.navCtrl.setRoot(HomePage);
 
-                this.res=JSON.stringify(this.res);
-                let length=this.res.length;
-                if(length<5000&&length>=20){
-                    this.saveResults(imageData,this.res)
+    }).catch(err=>{
+      this.presentToast(err)
+    })
 
-                }else{
-                  this.showAlert("Please provide a valid")
-                  console.log('error');
-                }
-            });
-
-
-
-      }, err => {
-        console.log(1,err);
-        this.showAlert(err);
-      });
 
 }
+
+presentToast(message) {
+  let toast = this.toastCtrl.create({
+    message: message,
+    duration: 3000,
+    position: 'top'
+  });
+
+  toast.onDidDismiss(() => {
+    console.log('Dismissed toast');
+  });
+
+  toast.present();
+}
+
 
 
 

@@ -17,6 +17,9 @@ import { ImagePicker } from '@ionic-native/image-picker';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { GoogleCloudVisionServiceProvider } from '../providers/google-cloud-vision-service/google-cloud-vision-service';
 import { HttpClientModule} from "@angular/common/http"
+import { AuthServiceProvider } from '../providers/auth-service/auth-service';
+import { LoginPage } from '../pages/login/login';
+import { UploadPicturesPage } from '../pages/upload-pictures/upload-pictures';
 
 
 
@@ -26,7 +29,9 @@ import { HttpClientModule} from "@angular/common/http"
     MyApp,
     HomePage,
     ListPage,
-    NewUserPage
+    NewUserPage,
+    LoginPage,
+    UploadPicturesPage
   ],
   imports: [
     BrowserModule,
@@ -41,7 +46,9 @@ import { HttpClientModule} from "@angular/common/http"
     MyApp,
     HomePage,
     ListPage,
-    NewUserPage
+    NewUserPage,
+    LoginPage,
+    UploadPicturesPage
   ],
   providers: [
     StatusBar,
@@ -53,6 +60,7 @@ import { HttpClientModule} from "@angular/common/http"
     ImagePicker,
     OpengallaryProvider,
     GoogleCloudVisionServiceProvider,
+    AuthServiceProvider,
 
 
   ]

@@ -1,0 +1,48 @@
+
+<ion-header background="primary">
+
+    <ion-navbar color="primary">
+  <ion-title center>Login page</ion-title>
+
+
+
+    </ion-navbar>
+
+  </ion-header>
+
+
+
+  <ion-content class="myview" padding>
+
+  <ion-list>
+  <form  #f="ngForm" (ngSubmit)="Login(f)" novalidate>
+    <ion-item>
+      <ion-label>Email</ion-label>
+      <ion-input type="email"  name="email" required ngModel email minlength="3" #email="ngModel"></ion-input>
+    </ion-item>
+    <div *ngIf="(email.hasError('pattern'))" class="error">
+            Please enter valid email
+    </div>
+
+    <div *ngIf="(email.hasError('minlength'))" class="error">
+            Minimum three letters
+    </div>
+
+    <ion-item>
+      <ion-label>Password</ion-label>
+      <ion-input type="password" name="password" required #password="ngModel" minlength="6" ngModel></ion-input>
+    </ion-item>
+    <div *ngIf="(password.hasError('minlength')) && (password.dirty )" class="error">
+      Minimum 6 characters
+   </div>
+
+
+
+  <div padding>
+    <button  ion-button color="primary" [disabled]="!f.valid" block >Login</button>
+  </div>
+  </form>
+  </ion-list>
+  <button  ion-button color="primary" block (click)="registerPage()">Register</button>
+
+  </ion-content>
