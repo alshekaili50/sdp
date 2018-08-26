@@ -20,7 +20,6 @@ export class AuthServiceProvider {
 			 credentials.password);
 	}
   signUp(credentials) {
-		console.log('2333')
 	return this.afAuth.auth.createUserWithEmailAndPassword(credentials.email, credentials.password);
 }
 

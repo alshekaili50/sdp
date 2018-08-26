@@ -1,48 +1,50 @@
 
-<ion-header background="primary">
+<ion-content padding class="animated fadeIn login auth-page">
+  <div class="login-content">
 
-    <ion-navbar color="primary">
-  <ion-title center>Login page</ion-title>
-
-
-
-    </ion-navbar>
-
-  </ion-header>
-
-
-
-  <ion-content class="myview" padding>
-
-  <ion-list>
-  <form  #f="ngForm" (ngSubmit)="Login(f)" novalidate>
-    <ion-item>
-      <ion-label>Email</ion-label>
-      <ion-input type="email"  name="email" required ngModel email minlength="3" #email="ngModel"></ion-input>
-    </ion-item>
-    <div *ngIf="(email.hasError('pattern'))" class="error">
-            Please enter valid email
+    <!-- Logo -->
+    <div padding-horizontal text-center class="animated fadeInDown">
+      <div class="logo"></div>
+      <h2 ion-text class="text-primary">
+        <strong>Face Recognition</strong>
+      </h2>
     </div>
 
-    <div *ngIf="(email.hasError('minlength'))" class="error">
-            Minimum three letters
+    <!-- Login form -->
+    <form class="list-form">
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="mail" item-start class="text-primary"></ion-icon>
+          Email
+        </ion-label>
+        <ion-input [(ngModel)]="email" type="email" name="email"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="lock" item-start class="text-primary"></ion-icon>
+          Password
+        </ion-label>
+        <ion-input [(ngModel)]="password" type="password" name="password"></ion-input>
+      </ion-item>
+    </form>
+
+    <p text-right ion-text color="secondary" tappable (click)="forgotPass()"><strong>Forgot Password?</strong></p>
+
+    <div>
+      <button ion-button icon-start block color="dark" tappable (click)="Login()">
+        <ion-icon name="log-in"></ion-icon>
+        SIGN IN
+      </button>
+
+
     </div>
 
-    <ion-item>
-      <ion-label>Password</ion-label>
-      <ion-input type="password" name="password" required #password="ngModel" minlength="6" ngModel></ion-input>
-    </ion-item>
-    <div *ngIf="(password.hasError('minlength')) && (password.dirty )" class="error">
-      Minimum 6 characters
-   </div>
 
+    <!-- Other links -->
+    <div text-center margin-top>
+      <span ion-text color="secondary" tappable (click)="registerPage()">New here? <strong>Sign up</strong></span>
+    </div>
 
-
-  <div padding>
-    <button  ion-button color="primary" [disabled]="!f.valid" block >Login</button>
   </div>
-  </form>
-  </ion-list>
-  <button  ion-button color="primary" block (click)="registerPage()">Register</button>
-
-  </ion-content>
+</ion-content>

@@ -20,7 +20,9 @@ import { HttpClientModule} from "@angular/common/http"
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { LoginPage } from '../pages/login/login';
 import { UploadPicturesPage } from '../pages/upload-pictures/upload-pictures';
-
+import { ImageServicesProvider } from '../providers/image-services/image-services';
+import { AngularFireStorageModule } from 'angularfire2/storage';
+import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
 
 
 
@@ -31,14 +33,16 @@ import { UploadPicturesPage } from '../pages/upload-pictures/upload-pictures';
     ListPage,
     NewUserPage,
     LoginPage,
-    UploadPicturesPage
+    UploadPicturesPage,
+    ProgressBarComponent
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
-    HttpClientModule
+    HttpClientModule,
+    AngularFireStorageModule
 
   ],
   bootstrap: [IonicApp],
@@ -61,6 +65,7 @@ import { UploadPicturesPage } from '../pages/upload-pictures/upload-pictures';
     OpengallaryProvider,
     GoogleCloudVisionServiceProvider,
     AuthServiceProvider,
+    ImageServicesProvider,
 
 
   ]

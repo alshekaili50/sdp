@@ -30,8 +30,6 @@ export class MyApp {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Home', component: HomePage },
-      { title: 'List', component: ListPage },
-      { title: 'New User', component: NewUserPage },
       { title: 'Upload Your Photos', component: UploadPicturesPage },
       { title: 'LogOut', component: LoginPage },
 
@@ -73,9 +71,8 @@ export class MyApp {
   //    console.log(this.user);
     }
     openPage(page) {
-      console.log(page);
       if(page.title=="LogOut"){
-          console.log(12);
+
         this.onLogout();
       }
       // Reset the content nav to have just this page

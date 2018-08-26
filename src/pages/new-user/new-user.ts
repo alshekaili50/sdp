@@ -14,7 +14,8 @@ import { Camera, CameraOptions } from '@ionic-native/camera';
 import {AuthServiceProvider} from '../../providers/auth-service/auth-service';
 import {HomePage} from '../home/home';
 import { ToastController } from 'ionic-angular';
-
+import {AngularFireAuth} from 'angularfire2/auth';
+import{LoginPage} from '../login/login';
 
 
 
@@ -42,12 +43,11 @@ export class NewUserPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, public takePicture:TakePictureProvider,
   public actionSheetCtrl: ActionSheetController, public openGallary:OpengallaryProvider,  private vision: GoogleCloudVisionServiceProvider,
   private db: AngularFireDatabase,private alert: AlertController,public loadingCtrl: LoadingController,public camera:Camera
-  ,public auth:AuthServiceProvider,private toastCtrl: ToastController)
+  ,public auth:AuthServiceProvider,private toastCtrl: ToastController,private afauth :AngularFireAuth,private nav:NavController)
  {
-     this.afList = db.list('/items')
+     this.afList = db.list('/users');
      this.data={
-       firstName:'',
-       lastName:'',
+       name:'',
        email:'',
        password:''
      }
@@ -56,16 +56,13 @@ export class NewUserPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad NewUserPage');
-    this.slides.lockSwipeToNext(false)
+
 
   }
-
-  goToSlide(){
-    this.slides.lockSwipeToNext(false)
-    this.slides.slideTo(1, 500);
-    this.slides.lockSwipeToPrev(false)
-
+  login(){
+    this.nav.setRoot(LoginPage);
   }
+
 
 
 showAlert(message) {
@@ -88,8 +85,18 @@ signUp() {
     console.log(credentials);
 
 		this.auth.signUp(credentials).then(res=>{
+
       this.presentToast('Account created successfully');
        this.navCtrl.setRoot(HomePage);
+       res.user.updateProfile({
+         displayName:this.data.name,
+         photoURL:'none'
+
+       }).catch(err=>{
+         console.log(err);
+       })
+
+
 
     }).catch(err=>{
       this.presentToast(err)

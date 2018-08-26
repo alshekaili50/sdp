@@ -11,6 +11,8 @@ import { AngularFireDatabase,AngularFireList } from 'angularfire2/database';
 import { AlertController } from 'ionic-angular';
 import { LoadingController } from 'ionic-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
+import {AngularFireAuth} from 'angularfire2/auth';
+import{ImageServicesProvider} from '../../providers/image-services/image-services';
 
 
 
@@ -33,14 +35,20 @@ export class UploadPicturesPage {
   afList:any;
   base64Image:any;
   res:any;
+  loadProgress:any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public takePicture:TakePictureProvider,
   public actionSheetCtrl: ActionSheetController, public openGallary:OpengallaryProvider,  private vision: GoogleCloudVisionServiceProvider,
-  private db: AngularFireDatabase,private alert: AlertController,public loadingCtrl: LoadingController,public camera:Camera)
- {
-     this.afList = db.list('/items')
+  private db: AngularFireDatabase,private alert: AlertController,public loadingCtrl: LoadingController,public camera:Camera,
+  private afauth:AngularFireAuth,private imageServices:ImageServicesProvider)
 
-  }
+ {
+   this.imageServices.countImagesOfUser(this.afauth.auth.currentUser.uid);
+   this.imageServices.getImagesOfUser(this.afauth.auth.currentUser.uid);
+
+    }
+
+
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad NewUserPage');
@@ -78,15 +86,7 @@ export class UploadPicturesPage {
 
    actionSheet.present();
  }
- saveResults(imageData, results) {
 
-//console.log(imageData,results);
-  this.afList.push({ imageData:imageData,results:results })
-
-
-
-
-}
 
 showAlert(message) {
   let alert = this.alert.create({
@@ -98,24 +98,21 @@ showAlert(message) {
 }
 takePhoto() {
   const loader = this.loadingCtrl.create({
-      content: "Please wait...",
+      content: "Verifying your Picture !",
       duration: 10000
     });
-    let opcoes = {
+    let opcoes =
+     {
     maximumImagesCount: 1,
     sourceType: 1,
     encodingType: this.camera.EncodingType.JPEG,
     destinationType: 0, // USE THIS TO RETURN BASE64 STRING
     correctOrientation: true
-  };
-
-
-
+    };
    this.camera.getPicture(opcoes).then((imageData) => {
-//     console.log(imageData);
      loader.present();
      this.base64Image = "data:image/jpeg;base64," + imageData;
-      this.vision.getLabels(imageData).subscribe(
+     this.vision.getLabels(imageData).subscribe(
             (val) => {
                       console.log(1);
                        console.log("POST call successful value returned in body",
@@ -136,7 +133,13 @@ takePhoto() {
                 this.res=JSON.stringify(this.res);
                 let length=this.res.length;
                 if(length<5000&&length>=20){
-                    this.saveResults(imageData,this.res)
+                  const loader = this.loadingCtrl.create({
+                      content: "Uploading your Picture !",
+                      duration: 10000
+                    });
+                    this.imageServices.uploadImageOfUser(this.afauth.auth.currentUser.uid,imageData).subscribe(val=>{
+                      this.loadProgress = val.toFixed(2);
+                    })
 
                 }else{
                   this.showAlert("Please provide a valid picture")
