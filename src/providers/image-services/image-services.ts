@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireDatabase,AngularFireList } from 'angularfire2/database';
 import { AngularFireStorage,AngularFireStorageReference,AngularFireUploadTask } from 'angularfire2/storage';
 import { Observable } from 'rxjs';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 
 /*
@@ -18,7 +19,7 @@ export class ImageServicesProvider {
   profileUrl: Observable<string | null>;
 
 
-  constructor(public http: HttpClient,private db:AngularFireDatabase,private storage:AngularFireStorage) {
+  constructor(public http: HttpClient,private db:AngularFireDatabase,private storage:AngularFireStorage,private auth: AngularFireAuth) {
     console.log('Hello ImageServicesProvider Provider');
 
   }
@@ -28,11 +29,13 @@ export class ImageServicesProvider {
   await this.db.database.ref('/images').orderByChild('uid').equalTo(uid).once("value", function(snapshot) {
     console.log(snapshot.val());
     snapshot.forEach(function(data) {
-        console.log(data.key);
         n++;
     });
-});
-console.log('n',n);
+}).then(res=>{
+  if(n>=5){
+    this.verifyingAccount(uid);
+  }
+})
   return n;
 
 
@@ -83,8 +86,27 @@ console.log('n',n);
     }
 
 
+  verifyingAccount(uid){
+    this.db.list('/users');
+    let key:any;
+
+    this.db.database.ref('/users').orderByChild('uid').equalTo(uid).once("value", function(snapshot) {
+        snapshot.forEach(function(data) {
+          console.log(data.key);
+          key=data.key;
 
 
+
+        });
+  }).then(res=>{
+    this.db.database.ref('/users/'+key).update({
+      veryfied:'true',
+      imageDownloaded:'start'
+    },res=>{
+      console.log('Veryfied Checked !!!')
+    })
+  });
+}
 
 
 
@@ -92,5 +114,6 @@ console.log('n',n);
   deleteImageofUser(uid,image){
 
   }
+
 
 }

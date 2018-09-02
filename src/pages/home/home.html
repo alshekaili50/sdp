@@ -8,11 +8,12 @@
 </ion-header>
 
 <ion-content padding>
-  <h3>Ionic Menu Starter</h3>
-
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will show you the way.
-  </p>
-
-  <button ion-button secondary menuToggle>Toggle Menu</button>
+  <h3>Hello {{name}}</h3>
+  <div *ngIf="!isActive">
+  <h4>Please activate your account to start using the awesome services ! </h4>
+  <button (click)="uploadPage()" ion-button secondary >Activate Account</button>
+</div>
+<div *ngIf="isActive">
+<h4>Your account is Verified ! </h4>
+</div>
 </ion-content>

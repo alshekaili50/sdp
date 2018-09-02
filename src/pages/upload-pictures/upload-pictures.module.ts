@@ -4,10 +4,10 @@ import { UploadPicturesPage } from './upload-pictures';
 
 @NgModule({
   declarations: [
-    UploadPicturesPage,
+    UploadPicturesPage
   ],
   imports: [
-    IonicPageModule.forChild(UploadPicturesPage),
+    IonicPageModule.forChild(UploadPicturesPage)
   ],
 })
 export class UploadPicturesPageModule {}

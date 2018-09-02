@@ -12,9 +12,8 @@ export class LoginPage {
   isAuth:boolean=false;
   email:string="";
   password:string="";
-  toastCtrl:ToastController;
   constructor(public navCtrl: NavController, public navParams: NavParams,private afauth:AngularFireAuth
-  ,private toast:ToastController,private forgotCtrl: AlertController,private menu:MenuController
+  ,private toast:ToastController,private forgotCtrl: AlertController,private menu:MenuController,private toastCtrl:ToastController
   ) {
       this.menu.swipeEnable(false);
 
@@ -27,8 +26,6 @@ export class LoginPage {
 
   }
   async Login(){
-
-
     try
     {
 
@@ -40,9 +37,6 @@ export class LoginPage {
      duration:3000
 
    }).present();
-
-
-
    this.navCtrl.setRoot(HomePage);
 
     }catch(e){
@@ -82,9 +76,18 @@ export class LoginPage {
         {
           text: 'Send',
           handler: data => {
+            let message:any;
+            console.log(data);
+            this.afauth.auth.sendPasswordResetEmail(data.email).then(res=>{
+              console.log(res);
+              message=res;
+            }).catch(err=>{
+              message=err.message;
+              console.log(err);
+            })
             console.log('Send clicked');
             let toast = this.toastCtrl.create({
-              message: 'Email was sended successfully',
+              message: message,
               duration: 3000,
               position: 'top',
               cssClass: 'dark-trans',

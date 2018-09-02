@@ -94,6 +94,14 @@ signUp() {
 
        }).catch(err=>{
          console.log(err);
+       }).then(res=>{
+         this.db.list('/users').push({
+           uid:this.afauth.auth.currentUser.uid,
+           veryfied:'false',
+           imageDownloaded:'doNotStart',
+           name:this.data.name
+         })
+
        })
 
 

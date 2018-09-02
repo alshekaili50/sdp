@@ -19,7 +19,8 @@ export class MyApp {
   isAuth=false;
   rootPage: any = LoginPage;
   user:any;
-  pages: Array<{title: string, component: any}>;
+  pages: Array<{title: string, component: any,icon:any}>;
+  name:string;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private afauth :AngularFireAuth,
   private menuCtrl:MenuController) {
@@ -29,9 +30,9 @@ export class MyApp {
 
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Home', component: HomePage },
-      { title: 'Upload Your Photos', component: UploadPicturesPage },
-      { title: 'LogOut', component: LoginPage },
+      { title: 'Home', component: HomePage,icon: 'home'},
+      { title: 'Upload Your Photos', component: UploadPicturesPage,icon: 'cloud-upload' },
+    
 
     ];
 
@@ -43,6 +44,7 @@ export class MyApp {
         this.user=user;
         if (user.uid!=null) {
           this.menuCtrl.enable(true);
+          this.name=this.afauth.auth.currentUser.displayName;
           console.log(user.uid);
       //    console.log(user);
           this.isAuth = true;
@@ -71,10 +73,6 @@ export class MyApp {
   //    console.log(this.user);
     }
     openPage(page) {
-      if(page.title=="LogOut"){
-
-        this.onLogout();
-      }
       // Reset the content nav to have just this page
       // we wouldn't want the back button to show in this scenario
       this.nav.setRoot(page.component);

@@ -1,14 +1,24 @@
-<ion-card>
-  <ion-card-content>
-    <ion-list no-lines>
-      <ion-list-header>Labels</ion-list-header>
-      <progress-bar *ngIf="loadProgress" [progress]="loadProgress"></progress-bar>
 
-    </ion-list>
-  </ion-card-content>
-</ion-card>
-<ion-fab bottom right>
-  <button ion-fab (click)="takePhoto()">
-    <ion-icon name="camera"></ion-icon>
-  </button>
-</ion-fab>
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Home</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <progress-bar *ngIf="loadProgress" [progress]="loadProgress"></progress-bar>
+  <ion-fab *ngIf="(!loadProgress && numberOfUploadedPics<5)" bottom right>
+    <button ion-fab (click)="takePhoto()">
+      <ion-icon name="camera"></ion-icon>
+    </button>
+  </ion-fab>
+  <ol class="progtrckr" data-progtrckr-steps="5">
+    <li class={{steps[0]}}>1</li>
+    <li class="{{steps[1]}}">2</li>
+    <li class="{{steps[2]}}">3</li>
+    <li class="{{steps[3]}}">4</li>
+    <li class="{{steps[4]}}">Verified</li>
+</ol>
+</ion-content>

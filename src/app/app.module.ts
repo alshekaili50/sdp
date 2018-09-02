@@ -26,6 +26,7 @@ import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
 
 
 
+
 @NgModule({
   declarations: [
     MyApp,
@@ -35,6 +36,7 @@ import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
     LoginPage,
     UploadPicturesPage,
     ProgressBarComponent
+
   ],
   imports: [
     BrowserModule,
@@ -42,7 +44,8 @@ import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
     HttpClientModule,
-    AngularFireStorageModule
+    AngularFireStorageModule,
+
 
   ],
   bootstrap: [IonicApp],
