@@ -32,14 +32,16 @@ export class MyApp {
     this.pages = [
       { title: 'Home', component: HomePage,icon: 'home'},
       { title: 'Upload Your Photos', component: UploadPicturesPage,icon: 'cloud-upload' },
-    
+
 
     ];
 
   }
 
   initializeApp() {
-    this.platform.ready().then(() => {
+    this.menuCtrl.enable(false);
+
+  /*  this.platform.ready().then(() => {
       this.afauth.auth.onAuthStateChanged(user => {
         this.user=user;
         if (user.uid!=null) {
@@ -63,7 +65,7 @@ export class MyApp {
     });
   }  onLoad(page: any) {
     this.nav.setRoot(page);
-    this.menuCtrl.close();}
+    this.menuCtrl.close();*/}
   onLogout() {
       this.afauth.auth.signOut();
       this.menuCtrl.close();

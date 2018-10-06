@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams,MenuController } from 'ionic-angular';
 import {TakePictureProvider} from '../../providers/take-picture/take-picture';
 import {OpengallaryProvider} from '../../providers/opengallary/opengallary';
 import { ViewChild } from '@angular/core';
@@ -12,7 +12,7 @@ import { LoadingController } from 'ionic-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import {AngularFireAuth} from 'angularfire2/auth';
 import{ImageServicesProvider} from '../../providers/image-services/image-services';
-
+import {LoginPage} from '../login/login'
 
 /**
  * Generated class for the NewUserPage page.
@@ -31,7 +31,7 @@ export class UploadPicturesPage {
   afList:any;
   res:any;
   loadProgress:any;
-  steps:string[]=['progtrckr-todo','progtrckr-todo','progtrckr-todo','progtrckr-todo','progtrckr-todo'];
+  steps:string[]=['progtrckr-todo'];
   uid:any;
   numberOfUploadedPics:any;
   imageDataArray:any[]=[];;
@@ -40,12 +40,16 @@ export class UploadPicturesPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, public takePicture:TakePictureProvider,
   public actionSheetCtrl: ActionSheetController, public openGallary:OpengallaryProvider,  private vision: GoogleCloudVisionServiceProvider,
   private alert: AlertController,public loadingCtrl: LoadingController,public camera:Camera,
-  private afauth:AngularFireAuth,private imageServices:ImageServicesProvider,private toast:ToastController)
+  private afauth:AngularFireAuth,private menu:MenuController,private imageServices:ImageServicesProvider,private toast:ToastController)
 
 
  {
+   this.navParams.get('data');
    this.uid=this.afauth.auth.currentUser.uid;
    this.countNumberOfImages();
+   this.takePhoto();
+   this.menu.swipeEnable(false);
+
 
   // this.imageServices.getImagesOfUser(this.afauth.auth.currentUser.uid);
 
@@ -185,9 +189,10 @@ uploadPhoto(imageData){
         if(this.loadProgress==100){
           this.countNumberOfImages();
           this.loadProgress=0;
+          this.navCtrl.setRoot(LoginPage);
           this.toast.create({
             duration:3000,
-            message:"Picture uploaded successfully"
+            message:"Thank you for Registration"
           }).present();
         }
       }),err => {

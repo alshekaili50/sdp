@@ -32,7 +32,7 @@ export class ImageServicesProvider {
         n++;
     });
 }).then(res=>{
-  if(n>=5){
+  if(n>=1){
     this.verifyingAccount(uid);
   }
 })
@@ -89,16 +89,19 @@ export class ImageServicesProvider {
   verifyingAccount(uid){
     this.db.list('/users');
     let key:any;
+    let imageDownloaded:any;
 
     this.db.database.ref('/users').orderByChild('uid').equalTo(uid).once("value", function(snapshot) {
         snapshot.forEach(function(data) {
           console.log(data.key);
-          key=data.key;
+          key=data.key
+          imageDownloaded=data.child('imageDownloaded').val()
 
 
 
         });
   }).then(res=>{
+    if(imageDownloaded != 'downloaded')
     this.db.database.ref('/users/'+key).update({
       veryfied:'true',
       imageDownloaded:'start'

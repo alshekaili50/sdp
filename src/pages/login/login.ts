@@ -4,6 +4,8 @@ import{HomePage} from '../home/home';
 import { AngularFireAuth } from 'angularfire2/auth';
 import {NgForm } from '@angular/forms';
 import {NewUserPage} from '../new-user/new-user';
+import { AngularFireDatabase,AngularFireList } from 'angularfire2/database';
+import{UploadPicturesPage} from '../upload-pictures/upload-pictures';
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
@@ -12,10 +14,14 @@ export class LoginPage {
   isAuth:boolean=false;
   email:string="";
   password:string="";
+  afList:any;
   constructor(public navCtrl: NavController, public navParams: NavParams,private afauth:AngularFireAuth
-  ,private toast:ToastController,private forgotCtrl: AlertController,private menu:MenuController,private toastCtrl:ToastController
+  ,private toast:ToastController,private forgotCtrl: AlertController,
+  private menu:MenuController,private toastCtrl:ToastController,private db: AngularFireDatabase
   ) {
       this.menu.swipeEnable(false);
+      this.afList = db.list('/users');
+
 
 
 
@@ -25,45 +31,17 @@ export class LoginPage {
   ionViewDidLoad() {
 
   }
-  async Login(){
-    try
-    {
 
-
-   const result=await this.afauth.auth.signInWithEmailAndPassword(this.email,this.password);
-   console.log(result);
-   this.toast.create({
-     message:"Logged in successfully !",
-     duration:3000
-
-   }).present();
-   this.navCtrl.setRoot(HomePage);
-
-    }catch(e){
-      console.log(e);
-      this.toast.create({
-        message:e.message,
-        duration:3000
-
-      }).present();
-    }
-
-
-
-  }
-  registerPage(){
-    this.navCtrl.push(NewUserPage);
-  }
-  forgotPass() {
+  register() {
 
     let forgot = this.forgotCtrl.create({
-      title: 'Forgot Password?',
-      message: "Enter you email address to send a reset link password.",
+      title: 'New User',
+      message: "Enter your full name:",
       inputs: [
         {
-          name: 'email',
-          placeholder: 'Email',
-          type: 'email'
+          name: 'name',
+          placeholder: 'name',
+          type: 'text'
         },
       ],
       buttons: [
@@ -74,20 +52,51 @@ export class LoginPage {
           }
         },
         {
-          text: 'Send',
+          text: 'Register',
           handler: data => {
             let message:any;
-            console.log(data);
-            this.afauth.auth.sendPasswordResetEmail(data.email).then(res=>{
+            message=data;
+            data.email=Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)+"@gma.com";
+            let pass='123456';
+            this.afauth.auth.createUserWithEmailAndPassword(data.email,pass).then(res=>{
               console.log(res);
               message=res;
-            }).catch(err=>{
+              res.user.updateProfile({
+              displayName:data.name,
+                photoURL:'none'
+
+              }).catch(err=>{
+                console.log(err);
+              }).then(res=>{
+                this.db.list('/users').push({
+                  uid:this.afauth.auth.currentUser.uid,
+                  veryfied:'false',
+                  imageDownloaded:'doNotStart',
+                  name:data.name
+                })
+
+              }).then(res=>{
+                this.navCtrl.setRoot(UploadPicturesPage,{'data':data});
+              })
+
+           }).catch(err=>{
+             let toast = this.toastCtrl.create({
+               message: err,
+               duration: 3000,
+               position: 'top',
+               cssClass: 'dark-trans',
+               closeButtonText: 'OK',
+               showCloseButton: true
+             });
+           })
+            .catch(err=>{
               message=err.message;
               console.log(err);
             })
             console.log('Send clicked');
+
             let toast = this.toastCtrl.create({
-              message: message,
+              message: message.message,
               duration: 3000,
               position: 'top',
               cssClass: 'dark-trans',
